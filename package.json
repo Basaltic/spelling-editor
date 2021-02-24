@@ -6,6 +6,7 @@
   ],
   "main": "./dist/spelling-editor.umd.js",
   "module": "./dist/spelling-editor.es.js",
+  "typings": "dist/lib/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/spelling-editor.es.js",
@@ -14,7 +15,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && tsc",
     "serve": "vite preview"
   },
   "dependencies": {
