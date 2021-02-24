@@ -9,7 +9,7 @@
 ## 开始使用
 
 ```bash
-tnpm install spelling-editor
+npm install --save spelling-editor
 ```
 
 ## 快速开始
@@ -28,4 +28,7 @@ editor.execute(Commands.toggleMark(boldMark))
 
 ```
 
-## 通用命令
+## 接口文档
+
+
+## 通用命令列表

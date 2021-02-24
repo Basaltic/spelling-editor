@@ -8,9 +8,12 @@ import { Parser, Serializer } from "./types";
 import ExtensionsManager from "./extension-manager";
 import { chainCommands, Command } from "prosemirror-commands";
 import { findParentNode, findSelectedNodeOfType } from "prosemirror-utils";
-import { Doc, Paragraph, Text } from "extensions";
+import { Doc, Paragraph, Text } from "./extensions";
 
-type EditorEventTypes = "change" | "change:doc";
+/**
+ * 编辑器暴露的事件
+ */
+type EditorEventTypes = "change";
 
 /**
  * 编辑器配置
@@ -41,6 +44,8 @@ export interface EditorConfig {
    */
   keymapsSettings?: boolean;
 }
+
+const defaultExtensions = [new Doc(), new Paragraph(), new Text()];
 
 const defaultConfigs: EditorConfig = {
   editable: true,
@@ -75,6 +80,10 @@ export class Editor extends EventEmitter<EditorEventTypes> {
     const { editable, inputFormatting, keymapsSettings } = configs;
 
     // --- 初始化各种扩展、插件 --- //
+
+    if (!extensions || extensions.length <= 0) {
+      extensions = defaultExtensions;
+    }
 
     const extManager = new ExtensionsManager(extensions);
 
