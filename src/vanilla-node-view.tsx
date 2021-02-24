@@ -1,6 +1,6 @@
-import { Node } from 'prosemirror-model';
-import { Decoration, EditorView, NodeView } from 'prosemirror-view';
-import { Editor } from './editor';
+import { Node } from "prosemirror-model";
+import { Decoration, EditorView, NodeView } from "prosemirror-view";
+import { Editor } from "./editor";
 
 export default class VanillaNodeView implements NodeView {
   dom: HTMLElement | null;
@@ -14,7 +14,12 @@ export default class VanillaNodeView implements NodeView {
   // 是否选中
   isSelected: boolean = false;
 
-  constructor(node: Node, view: EditorView, getPos: () => number, editor: Editor) {
+  constructor(
+    node: Node,
+    view: EditorView,
+    getPos: () => number,
+    editor: Editor
+  ) {
     this.node = node;
     this.view = view;
 
@@ -25,7 +30,7 @@ export default class VanillaNodeView implements NodeView {
     this.contentDOM = null;
   }
 
-  update(node, decorations: Decoration[]) {
+  update(node: Node, decorations: Decoration[]) {
     return true;
   }
 

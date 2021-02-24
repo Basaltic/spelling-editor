@@ -1,10 +1,10 @@
-import { baseKeymap } from 'prosemirror-commands';
-import { InputRule, inputRules } from 'prosemirror-inputrules';
-import { keymap } from 'prosemirror-keymap';
-import { Schema } from 'prosemirror-model';
-import { Plugin } from 'prosemirror-state';
-import { Editor } from './editor';
-import { Extension } from './extension';
+import { baseKeymap } from "prosemirror-commands";
+import { InputRule, inputRules } from "prosemirror-inputrules";
+import { keymap } from "prosemirror-keymap";
+import { Schema } from "prosemirror-model";
+import { Plugin } from "prosemirror-state";
+import { Editor } from "./editor";
+import { Extension } from "./extension";
 
 /**
  * 插件管理器
@@ -28,13 +28,13 @@ export default class ExtensionsManager {
    */
   public createSchema(defaultNodes: any = {}, defaultMarks: any = {}) {
     const nodes = { ...defaultNodes };
-    const marks = {};
+    const marks: any = {};
 
     for (const ext of this.extensions) {
-      if (ext.type === 'node' && ext.schema) {
+      if (ext.type === "node" && ext.schema) {
         nodes[ext.name] = ext.schema;
       }
-      if (ext.type === 'mark' && ext.schema) {
+      if (ext.type === "mark" && ext.schema) {
         marks[ext.name] = ext.schema;
       }
     }
@@ -49,9 +49,9 @@ export default class ExtensionsManager {
    * 创建节点view展示
    */
   public createNodeViews(editor: Editor) {
-    const views = {};
+    const views: any = {};
     for (const ext of this.extensions) {
-      if (ext.type === 'node' && ext.view) {
+      if (ext.type === "node" && ext.view) {
         views[ext.name] = ext.view(editor);
       }
     }
@@ -76,7 +76,7 @@ export default class ExtensionsManager {
   /**
    * 创建
    */
-  public createKeymaps(schema) {
+  public createKeymaps(schema: Schema) {
     let keymaps: Plugin[] = [];
     for (const ext of this.extensions) {
       if (ext.keymap) {
@@ -93,13 +93,13 @@ export default class ExtensionsManager {
   /**
    * 创建 input rules
    */
-  public buildInputRules(schema) {
+  public buildInputRules(schema: Schema) {
     let rules: InputRule[] = [];
     for (const ext of this.extensions) {
-      if (ext.type === 'node') {
+      if (ext.type === "node") {
         const rawRules = ext.inputRules({ type: schema.nodes[ext.name] });
         rules = [...rules, ...rawRules];
-      } else if (ext.type === 'mark') {
+      } else if (ext.type === "mark") {
         const rawRules = ext.inputRules({ type: schema.marks[ext.name] });
         rules = [...rules, ...rawRules];
       }

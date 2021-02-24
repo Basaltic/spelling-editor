@@ -1,41 +1,35 @@
-import { chainCommands, exitCode } from 'prosemirror-commands';
-import { NodeExtension } from '../../extension';
+import { chainCommands, exitCode } from "prosemirror-commands";
+import { Schema } from "prosemirror-model";
+import { NodeExtension } from "../../extension";
 
 /**
  * A Hard Line Break.
  */
 export default class HardBreak extends NodeExtension {
-  name = 'hard_break';
+  name = "hard_break";
   schema = {
     inline: true,
-    group: 'inline',
+    group: "inline",
     selectable: false,
-    parseDOM: [{ tag: 'br' }],
+    parseDOM: [{ tag: "br" }],
     toDOM() {
-      return ['br'] as any;
+      return ["br"] as any;
     },
   };
 
   static commands = {};
 
-  keymap = schema => {
+  keymap = (schema: Schema) => {
     const type = schema.nodes.hard_break;
     const cmd = chainCommands(exitCode, (state, dispatch) => {
-      if (dispatch) dispatch(state.tr.replaceSelectionWith(type.create()).scrollIntoView());
+      if (dispatch)
+        dispatch(state.tr.replaceSelectionWith(type.create()).scrollIntoView());
       return true;
     });
     return {
-      'Mod-Enter': cmd,
-      'Shift-Enter': cmd,
-      'Ctrl-Enter': cmd,
+      "Mod-Enter": cmd,
+      "Shift-Enter": cmd,
+      "Ctrl-Enter": cmd,
     };
   };
-
-  toMarkdown(state) {
-    state.write(' \\n ');
-  }
-
-  parseMarkdown() {
-    return { node: 'br' };
-  }
 }

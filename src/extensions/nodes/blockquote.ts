@@ -1,19 +1,21 @@
-import { wrappingInputRule } from 'prosemirror-inputrules';
-import { NodeExtension } from '../../extension';
+import { wrappingInputRule } from "prosemirror-inputrules";
+import { NodeType } from "prosemirror-model";
+import { NodeExtension } from "../../extension";
 
 export default class Blockquote extends NodeExtension {
-  name = 'blockquote';
+  name = "blockquote";
   schema = {
-    content: 'block+',
-    group: 'block',
+    content: "block+",
+    group: "block",
     defining: true,
-    parseDOM: [{ tag: 'blockquote' }],
+    parseDOM: [{ tag: "blockquote" }],
     toDOM() {
-      return ['blockquote', 0] as any;
+      return ["blockquote", 0] as any;
     },
   };
 
-  inputRules({ type }) {
+  inputRules(options: { type: NodeType }) {
+    const { type } = options;
     return [wrappingInputRule(/^\s*>\s$/, type)];
   }
 }

@@ -1,32 +1,34 @@
-import { setBlockType } from 'prosemirror-commands';
-import { textblockTypeInputRule } from 'prosemirror-inputrules';
-import { NodeExtension } from '../../extension';
+import { setBlockType } from "prosemirror-commands";
+import { textblockTypeInputRule } from "prosemirror-inputrules";
+import { NodeType, Schema } from "prosemirror-model";
+import { NodeExtension } from "../../extension";
 
 /**
  * Code Block Node
  */
 export default class CodeBlock extends NodeExtension {
-  name = 'code_block';
+  name = "code_block";
   schema = {
-    content: 'text*',
-    group: 'block',
-    marks: '',
+    content: "text*",
+    group: "block",
+    marks: "",
     code: true,
     defining: true,
-    parseDOM: [{ tag: 'pre', preserveWhitespace: 'full' }] as any,
+    parseDOM: [{ tag: "pre", preserveWhitespace: "full" }] as any,
     toDOM() {
-      return ['pre', 0] as any;
+      return ["pre", 0] as any;
     },
   };
 
-  keymap = schema => {
+  keymap = (schema: Schema) => {
     const type = schema.nodes.code_block;
     return {
-      'Shift-Ctrl-\\': setBlockType(type),
+      "Shift-Ctrl-\\": setBlockType(type),
     };
   };
 
-  inputRules({ type }) {
+  inputRules(options: { type: NodeType }) {
+    const { type } = options;
     return [textblockTypeInputRule(/^```$/, type)];
   }
 }
