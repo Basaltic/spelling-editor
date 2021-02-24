@@ -29,8 +29,9 @@ export default function App() {
 
   useEffect(() => {
     if (containerRef.current && !editor) {
-      const editor = new Editor(containerRef.current, {
-        extensions: [
+      const editor = new Editor(
+        containerRef.current,
+        [
           new Doc(),
           new Paragraph(),
           new Text(),
@@ -52,7 +53,8 @@ export default function App() {
             emptyNodeClass: "placeholder",
           }),
         ],
-      });
+        {}
+      );
 
       setEditor(editor);
       editor.focus();

@@ -1,13 +1,16 @@
-import { NodeExtension } from '../../extension';
+import { NodeExtension } from "../../extension";
 
+/**
+ * 段落
+ */
 export default class Paragraph extends NodeExtension {
-  name = 'paragraph';
+  name = "paragraph";
   schema = {
-    content: 'inline*',
-    group: 'block',
-    parseDOM: [{ tag: 'p' }],
+    content: "inline*",
+    group: "block",
+    parseDOM: [{ tag: "p" }],
     toDOM() {
-      return ['p', 0] as any;
+      return ["p", 0] as any;
     },
   };
 }

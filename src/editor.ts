@@ -8,6 +8,7 @@ import { Parser, Serializer } from "./types";
 import ExtensionsManager from "./extension-manager";
 import { chainCommands, Command } from "prosemirror-commands";
 import { findParentNode, findSelectedNodeOfType } from "prosemirror-utils";
+import { Doc, Paragraph, Text } from "extensions";
 
 type EditorEventTypes = "change" | "change:doc";
 
@@ -18,7 +19,7 @@ export interface EditorConfig {
   /**
    * 编辑器依赖的扩展列表，用于增强丰富编辑器的能力
    */
-  extensions: Extension[];
+  extensions?: Extension[];
   /**
    * 设置编辑器是否可以编辑
    * @default true
@@ -41,6 +42,13 @@ export interface EditorConfig {
   keymapsSettings?: boolean;
 }
 
+const defaultConfigs: EditorConfig = {
+  editable: true,
+  focusAfterExecuteCommands: true,
+  inputFormatting: true,
+  keymapsSettings: true,
+};
+
 /**
  * 编辑器实例
  * 对于扩展的处理、api暴露
@@ -51,15 +59,20 @@ export class Editor extends EventEmitter<EditorEventTypes> {
 
   public view: EditorView;
 
-  constructor(place: HTMLElement, configs: EditorConfig) {
+  constructor(
+    place: HTMLElement,
+    extensions: Extension[],
+    configs?: EditorConfig
+  ) {
     super();
 
-    const {
-      extensions,
-      editable = true,
-      inputFormatting = true,
-      keymapsSettings = true,
-    } = configs;
+    if (configs) {
+      configs = Object.assign(defaultConfigs, configs);
+    } else {
+      configs = defaultConfigs;
+    }
+
+    const { editable, inputFormatting, keymapsSettings } = configs;
 
     // --- 初始化各种扩展、插件 --- //
 
@@ -83,7 +96,7 @@ export class Editor extends EventEmitter<EditorEventTypes> {
     const state = EditorState.create({ schema, plugins });
     const view = new EditorView(place, {
       state,
-      editable: () => editable,
+      editable: () => editable || false,
       dispatchTransaction: (transaction) => {
         const newState = view.state.apply(transaction);
         view.updateState(newState);
@@ -125,12 +138,17 @@ export class Editor extends EventEmitter<EditorEventTypes> {
 
   /**
    * 创建编辑器实例
+   *
+   * @param place
+   * @param extensions
+   * @param configs
    */
   static async create(
     place: HTMLElement,
-    configs: EditorConfig
+    extensions: Extension[],
+    configs?: EditorConfig
   ): Promise<Editor> {
-    return new Editor(place, configs);
+    return new Editor(place, extensions, configs);
   }
 
   /**
@@ -226,7 +244,7 @@ export class Editor extends EventEmitter<EditorEventTypes> {
    * @param {Extension[]} extensions
    */
   public replaceExtension(extensions: Extension[]) {
-    const { inputFormatting = true, keymapsSettings = true } = this.configs;
+    const { inputFormatting, keymapsSettings } = this.configs;
 
     this.extensionManager.setExtensions(extensions);
 

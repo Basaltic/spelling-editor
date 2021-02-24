@@ -3,6 +3,9 @@ import { MarkSpec, MarkType, Schema } from "prosemirror-model";
 import { MarkExtension } from "../../extension";
 import markInputRule from "../../markInputRule";
 
+/**
+ * 下划线
+ */
 export default class Underline extends MarkExtension {
   name = "underline";
 

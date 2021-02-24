@@ -3,6 +3,9 @@ import { MarkType, Schema } from "prosemirror-model";
 import { MarkExtension } from "../../extension";
 import markInputRule from "../../markInputRule";
 
+/**
+ * 内联代码区块
+ */
 export default class CodeInline extends MarkExtension {
   name = "code_inline";
 

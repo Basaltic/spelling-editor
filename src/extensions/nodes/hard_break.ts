@@ -3,7 +3,7 @@ import { Schema } from "prosemirror-model";
 import { NodeExtension } from "../../extension";
 
 /**
- * A Hard Line Break.
+ * 换行
  */
 export default class HardBreak extends NodeExtension {
   name = "hard_break";

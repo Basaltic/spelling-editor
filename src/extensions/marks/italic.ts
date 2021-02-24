@@ -3,6 +3,9 @@ import { MarkSpec, MarkType, Schema } from "prosemirror-model";
 import { MarkExtension } from "../../extension";
 import markInputRule from "../../markInputRule";
 
+/**
+ * 斜体
+ */
 export default class Italic extends MarkExtension {
   public name = "italic";
 

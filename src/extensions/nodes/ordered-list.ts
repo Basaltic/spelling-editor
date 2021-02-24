@@ -2,6 +2,9 @@ import { wrappingInputRule } from "prosemirror-inputrules";
 import { MarkType, Node, NodeType } from "prosemirror-model";
 import { NodeExtension } from "../../extension";
 
+/**
+ * 顺序列表
+ */
 export default class OrderedList extends NodeExtension {
   name = "ordered_list";
   schema = {

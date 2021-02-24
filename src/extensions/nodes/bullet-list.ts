@@ -2,6 +2,9 @@ import { wrappingInputRule } from "prosemirror-inputrules";
 import { NodeType } from "prosemirror-model";
 import { NodeExtension } from "../../extension";
 
+/**
+ * 无顺序列表
+ */
 export default class BulletList extends NodeExtension {
   name = "bullet_list";
   schema = {

@@ -2,6 +2,9 @@ import { textblockTypeInputRule } from "prosemirror-inputrules";
 import { Node, NodeType } from "prosemirror-model";
 import { NodeExtension } from "../../extension";
 
+/**
+ * 标题
+ */
 export default class Heading extends NodeExtension {
   name = "heading";
   schema: any = {

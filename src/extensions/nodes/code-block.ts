@@ -4,7 +4,7 @@ import { NodeType, Schema } from "prosemirror-model";
 import { NodeExtension } from "../../extension";
 
 /**
- * Code Block Node
+ * 代码区块
  */
 export default class CodeBlock extends NodeExtension {
   name = "code_block";

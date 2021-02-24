@@ -2,6 +2,9 @@ import { wrappingInputRule } from "prosemirror-inputrules";
 import { NodeType } from "prosemirror-model";
 import { NodeExtension } from "../../extension";
 
+/**
+ * 引用区块
+ */
 export default class Blockquote extends NodeExtension {
   name = "blockquote";
   schema = {

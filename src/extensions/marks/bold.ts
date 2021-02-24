@@ -3,6 +3,9 @@ import { MarkSpec, MarkType, Schema } from "prosemirror-model";
 import { MarkExtension } from "../../extension";
 import markInputRule from "../../markInputRule";
 
+/**
+ * 加粗
+ */
 export default class Bold extends MarkExtension {
   public name = "bold";
 

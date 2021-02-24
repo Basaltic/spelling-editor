@@ -21,7 +21,7 @@ import { Editor, Extensions Commands } from 'spelling-editor'
 const { Doc, Paragraph, Text, Heading } = Extensions
 
 const dom = document.getElementById('edit-area')
-const editor = Editor.create(dom, { extensions: [new Doc(), new Paragraph(), new Text(), new Heading()] })
+const editor = Editor.create(dom, [new Doc(), new Paragraph(), new Text(), new Heading()], { })
 
 const boldMark = editor.getMark('bold')
 editor.execute(Commands.toggleMark(boldMark))

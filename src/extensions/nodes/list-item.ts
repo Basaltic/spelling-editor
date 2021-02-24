@@ -6,6 +6,9 @@ import {
 } from "prosemirror-schema-list";
 import { NodeExtension } from "../../extension";
 
+/**
+ * 列表项
+ */
 export default class ListItem extends NodeExtension {
   name = "list_item";
   schema = {

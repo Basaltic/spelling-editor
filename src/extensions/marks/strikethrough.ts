@@ -3,6 +3,9 @@ import { MarkSpec, MarkType, Schema } from "prosemirror-model";
 import { MarkExtension } from "../../extension";
 import markInputRule from "../../markInputRule";
 
+/**
+ * 中横线
+ */
 export default class Strikethrough extends MarkExtension {
   name = "strikethrough";
 
