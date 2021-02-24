@@ -1,27 +1,39 @@
-import { InputRule } from 'prosemirror-inputrules';
-import { NodeSpec, Node, MarkSpec, Schema, NodeType, MarkType } from 'prosemirror-model';
-import { Plugin } from 'prosemirror-state';
-import { Decoration, EditorView, NodeView } from 'prosemirror-view';
-import { Editor } from './editor';
-import { RawCommand } from './types';
+import { InputRule } from "prosemirror-inputrules";
+import {
+  NodeSpec,
+  Node,
+  MarkSpec,
+  Schema,
+  NodeType,
+  MarkType,
+} from "prosemirror-model";
+import { Plugin } from "prosemirror-state";
+import { Decoration, EditorView, NodeView } from "prosemirror-view";
+import { Editor } from "./editor";
+import { RawCommand } from "./types";
 
 /**
  * 扩展
  * 对于prosemirror的schema,view,plugin,command,keymap等，以及其他自定义的一些统一封装，方便统一处理
  */
-export class Extension {
+export abstract class Extension {
   //  插件的类型
-  public type: string = 'ext';
+  public type: string = "ext";
   // 插件的名称
-  public name: string = '';
-  // schema定义
-  public schema?: NodeSpec | MarkSpec;
+  public name: string = "";
 
   // 定义command
   public static commands?: Record<string, RawCommand>;
 
   // 节点视图展示定义
-  public view?: (editor: Editor) => (node: Node, view: EditorView, getPos: (() => number) | boolean, decorations: Decoration[]) => NodeView;
+  public view?: (
+    editor: Editor
+  ) => (
+    node: Node,
+    view: EditorView,
+    getPos: (() => number) | boolean,
+    decorations: Decoration[]
+  ) => NodeView;
 
   // prosemirror的插件
   public plugins: Plugin[] = [];
@@ -45,15 +57,15 @@ export class Extension {
 /**
  * Node类型的扩展
  */
-export class NodeExtension extends Extension {
-  public type: string = 'node';
-  public schema?: NodeSpec;
+export abstract class NodeExtension extends Extension {
+  public type: string = "node";
+  public abstract get schema(): NodeSpec;
 }
 
 /**
  * Mark类型的扩展
  */
-export class MarkExtension extends Extension {
-  public type: string = 'mark';
-  public schema?: MarkSpec;
+export abstract class MarkExtension extends Extension {
+  public type: string = "mark";
+  public abstract get schema(): MarkSpec;
 }

@@ -4,7 +4,7 @@ import { keymap } from "prosemirror-keymap";
 import { Schema } from "prosemirror-model";
 import { Plugin } from "prosemirror-state";
 import { Editor } from "./editor";
-import { Extension } from "./extension";
+import { Extension, MarkExtension, NodeExtension } from "./extension";
 
 /**
  * 插件管理器
@@ -31,11 +31,13 @@ export default class ExtensionsManager {
     const marks: any = {};
 
     for (const ext of this.extensions) {
-      if (ext.type === "node" && ext.schema) {
-        nodes[ext.name] = ext.schema;
+      if (ext.type === "node") {
+        const extension = ext as NodeExtension;
+        nodes[ext.name] = extension.schema;
       }
-      if (ext.type === "mark" && ext.schema) {
-        marks[ext.name] = ext.schema;
+      if (ext.type === "mark") {
+        const extension = ext as MarkExtension;
+        marks[ext.name] = extension.schema;
       }
     }
 
@@ -104,8 +106,6 @@ export default class ExtensionsManager {
         rules = [...rules, ...rawRules];
       }
     }
-
-    console.log(rules);
 
     return inputRules({ rules });
   }

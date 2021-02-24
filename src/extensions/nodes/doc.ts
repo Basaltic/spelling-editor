@@ -1,6 +1,8 @@
-import { NodeExtension } from '../../extension';
+import { NodeExtension } from "../../extension";
 
 export default class Doc extends NodeExtension {
-  name = 'doc';
-  schema = { content: 'block+' };
+  name = "doc";
+  get schema() {
+    return { content: "block+" };
+  }
 }

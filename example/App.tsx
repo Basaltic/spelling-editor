@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useEffect, useRef, useState } from "react";
-import { Editor, extensions } from "../src/index";
+import { Editor, Extensions, Commands } from "../src/index";
 
 const {
   Doc,
@@ -20,7 +20,7 @@ const {
   Underline,
   History,
   Placeholder,
-} = extensions;
+} = Extensions;
 
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -28,7 +28,7 @@ export default function App() {
   const [editor, setEditor] = useState<Editor | null>(null);
 
   useEffect(() => {
-    if (containerRef.current) {
+    if (containerRef.current && !editor) {
       const editor = new Editor(containerRef.current, {
         extensions: [
           new Doc(),
@@ -59,8 +59,10 @@ export default function App() {
     }
 
     return () => {
-      editor.destroy();
-      setEditor(null);
+      if (editor) {
+        editor.destroy();
+        setEditor(null);
+      }
     };
   }, []);
 
@@ -113,8 +115,13 @@ function BoldMenu(props: { editor: Editor | null }) {
   }, [editor]);
 
   const onClick = () => {
-    editor.execute();
+    editor.execute(Commands.toggleMark(editor.getMark("bold")));
+    editor.focus();
   };
 
-  return <button style={{ backgroundColor: active ? "red" : "" }}>加粗</button>;
+  return (
+    <button style={{ backgroundColor: active ? "red" : "" }} onClick={onClick}>
+      加粗
+    </button>
+  );
 }

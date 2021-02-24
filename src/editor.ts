@@ -1,28 +1,15 @@
-import 'prosemirror-view/style/prosemirror.css';
-import { MarkType, NodeType, Node } from 'prosemirror-model';
-import { EditorView } from 'prosemirror-view';
-import { Extension } from './extension';
-import { EditorState } from 'prosemirror-state';
-import EventEmitter from 'eventemitter3';
-import { Parser, Serializer } from './types';
-import ExtensionsManager from './extension-manager';
-import { chainCommands, Command } from 'prosemirror-commands';
-import { findParentNode, findSelectedNodeOfType } from 'prosemirror-utils';
+import "prosemirror-view/style/prosemirror.css";
+import { MarkType, NodeType, Node } from "prosemirror-model";
+import { EditorView } from "prosemirror-view";
+import { Extension } from "./extension";
+import { EditorState } from "prosemirror-state";
+import EventEmitter from "eventemitter3";
+import { Parser, Serializer } from "./types";
+import ExtensionsManager from "./extension-manager";
+import { chainCommands, Command } from "prosemirror-commands";
+import { findParentNode, findSelectedNodeOfType } from "prosemirror-utils";
 
-type EditorEventTypes = 'change' | 'change:doc';
-
-export interface EditorFeatureSwitches {
-  /**
-   * 是否开启 输入规则自动格式化的功能
-   * @default true
-   */
-  inputFormatting?: boolean;
-  /**
-   * 是否开启快捷键功能
-   * @default true
-   */
-  keymapsSettings?: boolean;
-}
+type EditorEventTypes = "change" | "change:doc";
 
 /**
  * 编辑器配置
@@ -38,9 +25,20 @@ export interface EditorConfig {
    */
   editable?: boolean;
   /**
-   * 自定义功能的开关，提供开启关闭某些功能的能力
+   * 执行命令之后自动聚焦编辑区域
+   * @default true
    */
-  features?: EditorFeatureSwitches;
+  focusAfterExecuteCommands?: boolean;
+  /**
+   * 是否开启 输入规则自动格式化的功能
+   * @default true
+   */
+  inputFormatting?: boolean;
+  /**
+   * 是否开启快捷键功能
+   * @default true
+   */
+  keymapsSettings?: boolean;
 }
 
 /**
@@ -49,14 +47,19 @@ export interface EditorConfig {
  */
 export class Editor extends EventEmitter<EditorEventTypes> {
   private extensionManager: ExtensionsManager;
-  private features: EditorFeatureSwitches;
+  private configs: EditorConfig;
 
   public view: EditorView;
 
   constructor(place: HTMLElement, configs: EditorConfig) {
     super();
-    const { extensions, editable = true, features = {} } = configs;
-    const { inputFormatting = true, keymapsSettings = true } = features;
+
+    const {
+      extensions,
+      editable = true,
+      inputFormatting = true,
+      keymapsSettings = true,
+    } = configs;
 
     // --- 初始化各种扩展、插件 --- //
 
@@ -81,11 +84,11 @@ export class Editor extends EventEmitter<EditorEventTypes> {
     const view = new EditorView(place, {
       state,
       editable: () => editable,
-      dispatchTransaction: transaction => {
+      dispatchTransaction: (transaction) => {
         const newState = view.state.apply(transaction);
         view.updateState(newState);
 
-        this.emit('change', this);
+        this.emit("change", this);
       },
       attributes: {},
     });
@@ -96,13 +99,13 @@ export class Editor extends EventEmitter<EditorEventTypes> {
 
     this.view = view;
     this.extensionManager = extManager;
-    this.features = features;
+    this.configs = configs;
   }
 
   /**
    * 是否处于使用输入法输入中
    */
-  get composing() {
+  get isComposing() {
     return this.view.composing;
   }
 
@@ -123,7 +126,10 @@ export class Editor extends EventEmitter<EditorEventTypes> {
   /**
    * 创建编辑器实例
    */
-  static async create(place: HTMLElement, configs: EditorConfig): Promise<Editor> {
+  static async create(
+    place: HTMLElement,
+    configs: EditorConfig
+  ): Promise<Editor> {
     return new Editor(place, configs);
   }
 
@@ -159,10 +165,17 @@ export class Editor extends EventEmitter<EditorEventTypes> {
    * @param {Command[]} commands 需要执行的命令，如果传入多个命令，会按顺序一一执行
    */
   public execute(...commands: Command<any>[]) {
+    let result = true;
     if (commands && commands.length > 0) {
       const cmd = chainCommands(...commands);
-      return cmd(this.view.state, this.view.dispatch);
+      result = cmd(this.view.state, this.view.dispatch);
     }
+
+    if (this.configs.focusAfterExecuteCommands) {
+      this.focus();
+    }
+
+    return result;
   }
 
   /**
@@ -199,13 +212,6 @@ export class Editor extends EventEmitter<EditorEventTypes> {
   }
 
   /**
-   * 聚焦编辑器
-   */
-  public focus() {
-    this.view.focus();
-  }
-
-  /**
    * 开关编辑器是否可以编辑
    *
    * @param {boolean} editable
@@ -220,7 +226,7 @@ export class Editor extends EventEmitter<EditorEventTypes> {
    * @param {Extension[]} extensions
    */
   public replaceExtension(extensions: Extension[]) {
-    const { inputFormatting = true, keymapsSettings = true } = this.features;
+    const { inputFormatting = true, keymapsSettings = true } = this.configs;
 
     this.extensionManager.setExtensions(extensions);
 
@@ -237,8 +243,18 @@ export class Editor extends EventEmitter<EditorEventTypes> {
       plugins.push(inputRules);
     }
 
-    const newState = EditorState.fromJSON({ schema: schema, plugins }, this.view.state.toJSON());
+    const newState = EditorState.fromJSON(
+      { schema: schema, plugins },
+      this.view.state.toJSON()
+    );
     this.view.updateState(newState);
+  }
+
+  /**
+   * 聚焦编辑器
+   */
+  public focus() {
+    this.view.focus();
   }
 
   /**
@@ -259,7 +275,8 @@ export class Editor extends EventEmitter<EditorEventTypes> {
   public isMarkActive(type: MarkType): boolean {
     const state = this.view.state;
     let { from, $from, to, empty } = state.selection;
-    if (empty) return type.isInSet(state.storedMarks || $from.marks()) ? true : false;
+    if (empty)
+      return type.isInSet(state.storedMarks || $from.marks()) ? true : false;
     else return state.doc.rangeHasMark(from, to, type);
   }
 
@@ -272,7 +289,8 @@ export class Editor extends EventEmitter<EditorEventTypes> {
   public isNodeActive(type: NodeType, attrs: Record<string, any>): boolean {
     const state = this.view.state;
     const node =
-      findSelectedNodeOfType(type)(state.selection) || findParentNode(node => node.type === type)(state.selection);
+      findSelectedNodeOfType(type)(state.selection) ||
+      findParentNode((node) => node.type === type)(state.selection);
 
     if (!Object.keys(attrs).length || !node) {
       return !!node;
