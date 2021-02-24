@@ -1,7 +1,8 @@
 import "./App.css";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Editor,
+import { Editor, extensions } from "../src/index";
+
+const {
   Doc,
   Paragraph,
   Text,
@@ -19,7 +20,7 @@ import {
   Underline,
   History,
   Placeholder,
-} from "../src/index";
+} = extensions;
 
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -56,6 +57,11 @@ export default function App() {
       setEditor(editor);
       editor.focus();
     }
+
+    return () => {
+      editor.destroy();
+      setEditor(null);
+    };
   }, []);
 
   return (

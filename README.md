@@ -16,9 +16,16 @@ tnpm install spelling-editor
 
 ```javascript
 
-import { Editor, Doc, Paragraph, Text, Heading } from 'spelling-editor'
+import { Editor, Extensions Commands } from 'spelling-editor'
+
+const { Doc, Paragraph, Text, Heading } = Extensions
 
 const dom = document.getElementById('edit-area')
-Editor.create(dom, { extensions: [new Doc(), new Paragraph(), new Text(), new Heading()] })
+const editor = Editor.create(dom, { extensions: [new Doc(), new Paragraph(), new Text(), new Heading()] })
+
+const boldMark = editor.getMark('bold')
+editor.execute(Commands.toggleMark(boldMark))
 
 ```
+
+## 通用命令
