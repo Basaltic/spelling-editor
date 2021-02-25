@@ -1,4 +1,4 @@
-import "./App.css";
+import "./app.css";
 import React, { useEffect, useRef, useState } from "react";
 import { Editor, Extensions, Commands } from "../src/index";
 
@@ -69,30 +69,16 @@ export default function App() {
   }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-        fontSize: "16px",
-        overflow: "auto",
-        position: "relative",
-      }}
-    >
-      <div style={{ display: "flex" }}>
+    <div className="container">
+      <div className="left">1</div>
+      <div className="editor-container">
+        {/* <div style={{ display: "flex" }}>
         <BoldMenu editor={editor} />
+      </div> */}
+        <div className="editor">
+          <div ref={containerRef}></div>
+        </div>
       </div>
-      <div
-        ref={containerRef}
-        style={{
-          width: 500,
-          minHeight: 200,
-          marginTop: 20,
-          border: "1px solid #ddd",
-        }}
-      ></div>
     </div>
   );
 }
