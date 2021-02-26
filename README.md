@@ -12,6 +12,12 @@
 npm install --save spelling-editor
 ```
 
+### Exmaple
+
+```bash
+npm run dev
+```
+
 ## 快速开始
 
 ```javascript
