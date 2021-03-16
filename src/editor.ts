@@ -221,7 +221,7 @@ export class Editor extends EventEmitter<EditorEventTypes> {
   }
 
   /**
-   * 设置编辑器的数据
+   * 设置编辑器的内容
    *
    * @param data    需要设置的编辑器数据，会替换已有的数据
    * @param {Parser} parser 设置了解析器，会自动调用解析函数来解析传入的数据
@@ -235,6 +235,24 @@ export class Editor extends EventEmitter<EditorEventTypes> {
       plugins: this.view.state.plugins,
       doc: data,
     });
+    this.view.updateState(newState);
+  }
+
+  /**
+   * 获取编辑器状态
+   */
+  public getStateJSON(): { [key: string]: any } {
+    return this.view.state.toJSON();
+  }
+
+  /**
+   * 更改编辑器状态
+   */
+  public setStateJSON(stateJSON: { [key: string]: any }) {
+    const newState = EditorState.fromJSON(
+      { schema: this.view.state.schema, plugins: this.view.state.plugins },
+      stateJSON
+    );
     this.view.updateState(newState);
   }
 

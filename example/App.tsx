@@ -97,6 +97,7 @@ function BoldMenu(props: { editor: Editor | null }) {
         const isActive = editor.isMarkActive(
           editor.view.state.schema.marks.bold
         );
+        console.log(editor.view.state.toJSON());
         setActive(isActive);
       });
     }
